@@ -406,7 +406,6 @@ locust -f locustfile.py --host http://127.0.0.1:8000
 - [ ] Move the WebSocket to Celery bridge (`/internal/broadcast-release`) to Redis pub/sub for horizontal scaling beyond a single FastAPI process
 - [ ] Replace the raw shared-secret header on `/internal/*` with a network-level restriction for production
 - [ ] Real payment gateway integration behind the existing QR/`PaymentIntent` abstraction (currently a mock "scan to confirm" flow)
-- [ ] CI check that fails if `alembic revision --autogenerate` would produce a non-empty diff against committed models
 
 ---
 
