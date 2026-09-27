@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --seat-available: #22c55e;
+  --seat-held: #f59e0b;
+  --seat-confirmed: #6b7280;
+  --seat-mine: #4f46e5;
+}
+
+body {
+  background-color: #0f1117;
+  color: #f1f5f9;
+}
+
+.seat-btn {
+  @apply flex h-9 w-9 items-center justify-center rounded-md text-[10px] font-semibold transition-transform;
+}
+
+.seat-btn:hover:not(:disabled) {
+  @apply scale-110;
+}
+
+.seat-btn:disabled {
+  @apply cursor-not-allowed opacity-70;
+}
+
+.card {
+  @apply rounded-xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg;
+}
+
+.btn-primary {
+  @apply rounded-lg bg-brand-600 px-4 py-2 font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply rounded-lg border border-slate-700 px-4 py-2 font-medium text-slate-200 transition-colors hover:bg-slate-800;
+}
+
+.input {
+  @apply w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-brand-500;
+}
