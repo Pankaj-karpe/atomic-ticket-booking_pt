@@ -1,0 +1,33 @@
+# =============================================================================
+# Dockerfile.frontend — Next.js build -> minimal Node runtime (standalone)
+# Nginx is NOT baked into this image; it runs as its own service in front
+# of this one (see docker-compose.frontend.yml + nginx.conf below) — this
+# app is a fully dynamic Next.js app (client components fetching arbitrary
+# event/ticket IDs), so it needs a running Next server, not a static export.
+# =============================================================================
+
+# STAGE 1: install deps + build
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# STAGE 2: minimal runtime — only the standalone server + static assets
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+
+CMD ["node", "server.js"]
