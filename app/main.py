@@ -8,6 +8,7 @@ from .routers import auth, event, reservation, orders, websocket, internal, admi
 from .database import engine
 import logging
 from . import models, utils
+from prometheus_fastapi_instrumentator import Instrumentator
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -30,6 +31,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+Instrumentator().instrument(app).expose(app)
 
 origins = ["*"]
 
