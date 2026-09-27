@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend_p2
-          file: ./frontend_p2/Dockerfile.frontend
+          file: ./Dockerfile.frontend
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-fe-pt:${{ steps.vars.outputs.sha_tag }}
