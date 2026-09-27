@@ -41,8 +41,8 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile.frontend
+          context: ./frontend_p2
+          file: ./frontend_p2/Dockerfile.frontend
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-fe-pt:${{ steps.vars.outputs.sha_tag }}
