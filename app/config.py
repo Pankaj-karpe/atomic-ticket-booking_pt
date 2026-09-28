@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     BROKER_URL: str | None = None
     HOLD_EXPIRY_MINUTES: int | None = None
     FASTAPI_INTERNAL_URL: str | None = None
+    PUBLIC_API_URL: str | None = None   # browser-reachable backend URL, used in payment links/QR
 
     SMTP_HOST: str | None = None
     SMTP_PORT: str | None = None
