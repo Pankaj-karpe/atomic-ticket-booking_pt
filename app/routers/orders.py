@@ -63,7 +63,9 @@ async def checkout_order(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_buyer)
 ):
- 
+    public_base = config.settings.PUBLIC_API_URL or config.settings.FASTAPI_INTERNAL_URL
+    confirm_url = f"{public_base}/orders/confirm-payment/{intent.token}"
+
     ticket = db.query(models.Ticket).filter(models.Ticket.id == payload.ticket_id).first()
     if not ticket:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = f"Ticket with id: {payload.ticket_id} not found")
