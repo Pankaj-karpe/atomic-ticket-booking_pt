@@ -6,15 +6,18 @@ from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from .routers import auth, event, reservation, orders, websocket, internal, admin, venue
 from .database import engine
-import logging
+from . import tracing
+
+tracing.tracer = tracing.setup_tracing("backend")
+
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-from . import tracing
-from . import models, utils
 
+from .routers import auth, event, reservation, orders, websocket, internal, admin, venue
+import logging
+from . import models, utils
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -73,8 +76,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-tracing.tracer = tracing.setup_tracing("backend")
 FastAPIInstrumentor.instrument_app(app)
 RequestsInstrumentor().instrument()
 SQLAlchemyInstrumentor().instrument(engine=engine)
