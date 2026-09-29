@@ -48,6 +48,12 @@ markdown-it-py==4.2.0
 MarkupSafe==3.0.3
 mdurl==0.1.2
 msgpack==1.2.2
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-grpc
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-celery
+opentelemetry-instrumentation-requests
+opentelemetry-instrumentation-sqlalchemy
 packaging==26.3
 passlib==1.7.4
 pika==1.4.4

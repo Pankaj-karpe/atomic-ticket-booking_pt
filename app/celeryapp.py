@@ -8,6 +8,8 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 from .config import settings
+from opentelemetry.instrumentation.celery import CeleryInstrumentor
+from . import tracing
 
 BROKER_URL = settings.BROKER_URL
 
@@ -17,6 +19,9 @@ celery_app = Celery(
     backend=None,
     include=["app.tasks"],
 )
+
+tracing.tracer = tracing.setup_tracing("celery-worker")
+CeleryInstrumentor().instrument()
 
 #acknowledge tasks only after they finish => if a worker crashes mid-task, RabbitMQ redelivers it instead of losing it
 celery_app.conf.update(

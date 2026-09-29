@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from ..database import get_db
 from .websocket import manager
+from opentelemetry import trace
  
  
 router = APIRouter(
@@ -140,16 +141,17 @@ async def confirm_payment(token: str, db: Session = Depends(get_db)):
         f"Ticket ID: {ticket.id}. See you there!",
     )
  
-    await manager.broadcast_to_event(
-        event_id=ticket.event_id,
-        message={
-            "event": "SEAT_CONFIRMED",
-            "seat_id": ticket.seat_id,
-            "ticket_id": ticket.id,
-            "buyer_id": ticket.user_id,
-            "status": "CONFIRMED"
-        }
-    )
+    with tracer.start_as_current_span("websocket_broadcast"):    
+        await manager.broadcast_to_event(
+            event_id=ticket.event_id,
+            message={
+                "event": "SEAT_CONFIRMED",
+                "seat_id": ticket.seat_id,
+                "ticket_id": ticket.id,
+                "buyer_id": ticket.user_id,
+                "status": "CONFIRMED"
+            }
+        )
  
     total_seats = db.query(models.Seat).filter(models.Seat.venue_id == ticket.event.venue_id).count()
     confirmed_count = db.query(models.Ticket).filter(models.Ticket.event_id == ticket.event_id, models.Ticket.status == "CONFIRMED").count()

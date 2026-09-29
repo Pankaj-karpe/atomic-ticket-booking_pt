@@ -10,6 +10,7 @@ from .celeryapp import celery_app
 from .database import SessionLocal
 from . import models
 from .config import settings
+from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
 
@@ -118,13 +119,13 @@ def _notify_fastapi_of_release(event_id: int, seat_ids: list[int]):
     """
     url = f"{FASTAPI_INTERNAL_URL}/internal/broadcast-release/{event_id}"
     try:
-        response = requests.post(
-            url,
-            json={"seat_ids": seat_ids},
-            headers={"X-Internal-Secret": INTERNAL_API_SECRET},
-            timeout=5,
-        )
-        response.raise_for_status()
+        with tracer.start_as_current_span("notify_fastapi_release"):
+            response = requests.post(
+                url,
+                json={"seat_ids": seat_ids},
+                headers={"X-Internal-Secret": INTERNAL_API_SECRET},
+                timeout=5,
+            )
         
     except requests.RequestException as e :
         # Don't let a broadcast failure roll back or crash the whole task —

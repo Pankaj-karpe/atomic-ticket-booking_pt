@@ -9,6 +9,10 @@ from contextlib import asynccontextmanager
 from .routers import auth, event, reservation, orders, websocket, internal, admin, venue
 from .database import engine
 import logging
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+from . import tracing
 from . import models, utils
 
 
@@ -34,6 +38,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+tracing.tracer = tracing.setup_tracing("backend")
+FastAPIInstrumentor.instrument_app(app)
+RequestsInstrumentor().instrument()
+SQLAlchemyInstrumentor().instrument(engine=engine)
 
 origins = ["*"]
 
