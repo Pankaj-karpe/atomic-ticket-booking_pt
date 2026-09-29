@@ -11,7 +11,7 @@ from typing import List
 from ..database import get_db
 from .websocket import manager
 from opentelemetry import trace
- 
+tracer = trace.get_tracer(__name__)
  
 router = APIRouter(
     prefix="/orders",

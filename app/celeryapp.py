@@ -26,7 +26,7 @@ CeleryInstrumentor().instrument()
 #acknowledge tasks only after they finish => if a worker crashes mid-task, RabbitMQ redelivers it instead of losing it
 celery_app.conf.update(
     task_acks_late=True,
-    worker_prefetch_multilier=1,  # one worker handles only one task 
+    worker_prefetch_multiplier=1,  # one worker handles only one task 
     timezone="UTC",
     enable_utc=True,
 )

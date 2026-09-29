@@ -11,6 +11,7 @@ from .database import SessionLocal
 from . import models
 from .config import settings
 from opentelemetry import trace
+tracer = trace.get_tracer(__name__)
 
 logger = logging.getLogger(__name__)
 

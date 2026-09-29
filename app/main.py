@@ -38,11 +38,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-tracing.tracer = tracing.setup_tracing("backend")
-FastAPIInstrumentor.instrument_app(app)
-RequestsInstrumentor().instrument()
-SQLAlchemyInstrumentor().instrument(engine=engine)
-
 origins = ["*"]
 
 @app.get("/")
@@ -69,6 +64,7 @@ async def metrics_middleware(request: Request, call_next):
 @app.get("/metrics", include_in_schema=False)
 def metrics():
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -76,6 +72,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+tracing.tracer = tracing.setup_tracing("backend")
+FastAPIInstrumentor.instrument_app(app)
+RequestsInstrumentor().instrument()
+SQLAlchemyInstrumentor().instrument(engine=engine)
 
 app.include_router(auth.router)
 app.include_router(event.router)
