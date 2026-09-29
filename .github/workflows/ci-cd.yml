@@ -63,8 +63,8 @@ jobs:
       - name: Update image tags
         run: |
           cd manifests
-          sed -i "s|image: .*atomic-tickets-pt:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-pt:${{ needs.build-and-push.outputs.sha_tag }}|" backend.yml worker.yml beat.yml
-          sed -i "s|image: .*atomic-tickets-fe-pt:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-fe-pt:${{ needs.build-and-push.outputs.sha_tag }}|" frontend.yml
+          sed -i "s|image: .*atomic-tickets-pt:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-pt:${{ needs.build-and-push.outputs.sha_tag }}|" base/backend.yml base/worker.yml base/beat.yml
+          sed -i "s|image: .*atomic-tickets-fe-pt:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/atomic-tickets-fe-pt:${{ needs.build-and-push.outputs.sha_tag }}|" base/frontend.yml
 
       - name: Commit and push updated manifests
         run: |
